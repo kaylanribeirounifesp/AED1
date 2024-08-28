@@ -30,14 +30,6 @@ celula *Busca(int x, celula *lst) {
     return p;
 }
 
-// busca recursiva
-celula *BuscaR(int x, celula *lst) {
-    if (lst->seg == NULL)
-        return NULL;
-    if (lst->seg->conteudo == x)
-        return lst->seg;
-    return BuscaR(x, lst->seg);
-}
 
 //remove espaços alocados
 void Remove(celula *p) {
@@ -50,44 +42,53 @@ void Remove(celula *p) {
 
 // insere
 void Insere(int y, celula *p) {
-    celula *nova;
+    celula * aux = p->seg;
+    celula * ant = NULL;
+     celula *nova;
     nova = malloc(sizeof(celula));
     nova->conteudo = y;
+    if(p->seg != NULL)
+    {
+       while( aux != NULL && aux->conteudo != y){
+        ant = aux;
+        aux = aux ->seg;
+       }
+       if(aux != NULL){
+        if(ant == NULL)p->seg = ant;
+        ant -> seg = nova->seg;
+        free(aux);
+        free(nova);
+       }else{
+        nova->seg = p->seg;
+        p->seg = nova;
+    
+       }
+      } 
     nova->seg = p->seg;
     p->seg = nova;
+    
+
+
 }
 
-void limpa(celula *l) {
-    celula *p = l->seg;
-    while (l->seg != NULL) {
-        l->seg = p->seg;
-        free(p);
-        p = l->seg;
-    }
-}
-celula *Buscamin(celula*lst){
-    celula *p = lst->seg;
-    celula *q = p->seg;
-    while (q!=NULL){
-        if(p->conteudo > q->conteudo) p=q;
-        q=q->seg;
-    }
-    return p;
-}
+int main(){
+    int n;
+    int x;
+    celula * G = malloc(sizeof(celula));
+    G->seg = NULL;
 
-int main() {
-    celula *c = malloc(sizeof(celula));
-    c->seg = NULL;
-    celula *min;
-    Insere(20, c);
-    Insere(10, c);
-    Insere(70, c);
-    Imprima(c);
-    printf("\n");
-    min = Buscamin(c);
-    Imprima(min);
-    limpa(c);
-    free(c);
-    free(min);
-    return 0;
-};
+    do{
+        scanf("%d",&n);
+        int * v = malloc(n*sizeof(int));
+        for(int i = 0 ; i< n; i++){
+        scanf("%d",&x);
+        Insere(x, G);
+        }
+         for(int i = 0 ; i< n; i++){
+            printf("%d",v[i]);
+        }
+        printf("\n");
+        Imprima(G);
+
+    }while(n !=0);
+}
